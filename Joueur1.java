@@ -52,7 +52,8 @@ public class Joueur1 {
         while ( !valid ){
             if ( colone == -1 ){
                 System.out.println("fin du jeu") ;
-                colone = -1 ;
+                System.exit(0) ;
+                // colone = -1 ;
             }
             else{
                 // pour le joueur colone dans [1, size]

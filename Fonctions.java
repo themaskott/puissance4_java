@@ -123,5 +123,26 @@ public class Fonctions {
         }
         return pleine ;
     }
+    
+    public static void envoyerMessage( Joueur1 joueur1, Joueur2 joueur2, String message ){
+        joueur1.envoyerMessage(message) ;
+        joueur2.envoyerMessage(message) ;
+    }
+
+    public static String Result(boolean winner, Integer joueur, Integer nbTour){
+        Integer nbCoup = 0 ; 
+        if ( nbTour % 2 == 0 ){
+            nbCoup = nbTour / 2 ;
+        }
+        else{
+            nbCoup = nbCoup / 2 + 1 ;
+        }
+        if ( winner ){
+            return "Victoire du joueur " + Integer.toString(joueur) + " en " + Integer.toString(nbCoup) + " coups" ;
+        }
+        else{
+            return "Egalite, pas de vainqueur" ;
+        }
+    }
 
 }
