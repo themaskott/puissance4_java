@@ -1,5 +1,6 @@
 import java.lang.System ;
 import java.util.Arrays ;
+import java.lang.Math;
 import java.net.* ;
 import java.io.* ;
 
@@ -10,8 +11,9 @@ public class Main {
     final static Integer NBPIONSVICTOIRE = 4 ;
 
     final static int PORT = 4444 ;
+
     public static void main(String[] args) throws Exception {
-        
+
         Joueur1 joueur1 ;
         Joueur2 joueur2 ;
         char grille [][] ;
@@ -33,13 +35,20 @@ public class Main {
             joueur2 = new Joueur2(socketClient);
             joueur2.start();
 
+            // envoi des regles aux deux joueurs
+            Fonctions.envoyerMessage( joueur1, joueur2, Fonctions.affichJeu(NBPIONSVICTOIRE) );
+
             // affichage de la grille initiale aux deux joeurs
-            Fonctions.envoyerMessage(joueur1, joueur2, grilleAafficher ) ;
+            Fonctions.envoyerMessage( joueur1, joueur2, grilleAafficher ) ;
 
             int nbTour = 0 ;
             Integer colone ;
-            int numJoueur = 0 ;
             char symbole = '.' ;
+
+            // tirage du joueur a debuter
+            int numJoueur = Fonctions.getRandomInt(1, 2) ;
+            Fonctions.envoyerMessage(joueur1, joueur2, "Le joueur " + Integer.toString(numJoueur) + " joue en premier") ;
+            
             // booleens de controle
             boolean winner = false ;
             boolean grillePleine = false ;
@@ -54,7 +63,7 @@ public class Main {
 			        colone = joueur1.choixColone(grille, TAILLEGRILLE) ;
                     if ( colone == - 1){
                         // -1 sert de flag pour l arret du jeu
-                        System.out.println("FIN DU JEU") ; // a faire : fonction de fin
+                        Fonctions.finDeJeu( joueur1, joueur2, "Le joueur 1 a interrompu la partie") ;
                         System.exit(0) ;
                     }
                     else{
@@ -63,11 +72,11 @@ public class Main {
                     }
                 }
                 else{
-                    joueur1.envoyerMessage("En attente d un mouvement du joueur 1")	;
+                    joueur1.envoyerMessage("En attente d un mouvement du joueur 2")	;
 			        colone = joueur2.choixColone(grille, TAILLEGRILLE) ;
                     if ( colone == - 1){
                         // -1 sert de flag pour l arret du jeu
-                        System.out.println("FIN DU JEU") ; // a faire : fonction de fin
+                        Fonctions.finDeJeu( joueur1, joueur2, "Le joueur 2 a interrompu la partie") ;
                         System.exit(0) ;
                     }
                     else{
@@ -85,6 +94,7 @@ public class Main {
             }
 
             msgFinal = Fonctions.Result(winner, numJoueur, nbTour ) ;
+            Fonctions.finDeJeu( joueur1, joueur2, msgFinal ) ;
         }
         catch (Exception e) {
             e.printStackTrace();

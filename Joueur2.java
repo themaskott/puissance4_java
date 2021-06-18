@@ -66,8 +66,8 @@ public class Joueur2 extends Thread {
 
         while ( !valid ){
             if ( colone == -1 ){
-                System.out.println("fin du jeu") ;
                 colone = -1 ;
+                valid = true ;
             }
             else{
                 // pour le joueur colone dans [1, size]

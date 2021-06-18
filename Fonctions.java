@@ -99,7 +99,6 @@ public class Fonctions {
         for ( int i = 1 ; i < nbPions ; i++ ){
             if ( (ligne - i > -1 ) && ( colone + i < size )){
                 motifDiag2 = motifDiag2 + grille[ligne-i][colone+i] ;
-                System.out.println(Integer.toString(i));
             }
         }
         for ( int i = 1 ; i < nbPions ; i++ ){
@@ -135,7 +134,7 @@ public class Fonctions {
             nbCoup = nbTour / 2 ;
         }
         else{
-            nbCoup = nbCoup / 2 + 1 ;
+            nbCoup = nbTour / 2 + 1 ;
         }
         if ( winner ){
             return "Victoire du joueur " + Integer.toString(joueur) + " en " + Integer.toString(nbCoup) + " coups" ;
@@ -143,6 +142,20 @@ public class Fonctions {
         else{
             return "Egalite, pas de vainqueur" ;
         }
+    }
+
+    public static void finDeJeu( Joueur1 joueur1, Joueur2 joueur2, String message ) throws Exception {
+        Fonctions.envoyerMessage(joueur1, joueur2, message) ;
+        joueur2.shutDownSocket() ;
+        System.exit(0) ;
+    }
+
+
+    public static int getRandomInt(int min, int max) {
+        // define the range
+        int range = max - min + 1;
+        int rand = (int)(Math.random() * range) + min ;
+        return rand ;
     }
 
 }
