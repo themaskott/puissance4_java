@@ -1,8 +1,20 @@
+// Jeu de puissance 4
+// Joueur 1 en local
+// Joueur 2 via le reseau : nc 127.0.0.1 4444
+
+// @Maskott
+// 18/06/2021
+
+
 import java.lang.System ;
-import java.util.Arrays ;
-import java.lang.Math;
+// import java.util.Arrays ;
+// import java.lang.Math;
 import java.net.* ;
-import java.io.* ;
+// import java.io.* ;
+
+// A faire : fonction menu initial
+// A faire : sauvegarde fichier i/o
+// commentaire des fonctions
 
 
 public class Main {
@@ -19,13 +31,17 @@ public class Main {
         char grille [][] ;
         String grilleAafficher ;
         String msgFinal ;
+        SupportJeu gameDatas ;
+
+        // initialisation de la partie 
+        gameDatas = Fonctions.initialiserJeu(TAILLEGRILLE, "save.txt") ;
+
 
         // initialisation du joueur 1
         joueur1 = new Joueur1() ;
 
-        // initailisation d une grille vide
-        grille = Fonctions.initGrille(TAILLEGRILLE) ;
-        grilleAafficher = Fonctions.affichGrille(grille, TAILLEGRILLE) ;
+        // recuperation de la grille pour son affichage
+        grilleAafficher = Fonctions.affichGrille(gameDatas.grille, TAILLEGRILLE) ;
 
         try{
             // initialisation du socket en attente du joueur 2
@@ -41,12 +57,11 @@ public class Main {
             // affichage de la grille initiale aux deux joeurs
             Fonctions.envoyerMessage( joueur1, joueur2, grilleAafficher ) ;
 
-            int nbTour = 0 ;
             Integer colone ;
             char symbole = '.' ;
 
-            // tirage du joueur a debuter
-            int numJoueur = Fonctions.getRandomInt(1, 2) ;
+            // recuperation du num du joueur a debuter
+            int numJoueur = gameDatas.prochainJoueur ;
             Fonctions.envoyerMessage(joueur1, joueur2, "Le joueur " + Integer.toString(numJoueur) + " joue en premier") ;
             
             // booleens de controle
@@ -55,15 +70,15 @@ public class Main {
 
 
             while ( !winner && !grillePleine ){
-                nbTour += 1 ;
+                gameDatas.nbTour += 1 ;
                 numJoueur = numJoueur % 2 ;
 
                 if ( numJoueur == 1 ){
                     joueur2.envoyerMessage("En attente d un mouvement du joueur 1")	;
-			        colone = joueur1.choixColone(grille, TAILLEGRILLE) ;
+			        colone = joueur1.choixColone(gameDatas.grille, TAILLEGRILLE) ;
                     if ( colone == - 1){
                         // -1 sert de flag pour l arret du jeu
-                        Fonctions.finDeJeu( joueur1, joueur2, "Le joueur 1 a interrompu la partie") ;
+                        Fonctions.finDeJeu( joueur1, joueur2, "Le joueur 1 a interrompu la partie", gameDatas.fichierSauvegarde ) ;
                         System.exit(0) ;
                     }
                     else{
@@ -73,10 +88,10 @@ public class Main {
                 }
                 else{
                     joueur1.envoyerMessage("En attente d un mouvement du joueur 2")	;
-			        colone = joueur2.choixColone(grille, TAILLEGRILLE) ;
+			        colone = joueur2.choixColone(gameDatas.grille, TAILLEGRILLE) ;
                     if ( colone == - 1){
                         // -1 sert de flag pour l arret du jeu
-                        Fonctions.finDeJeu( joueur1, joueur2, "Le joueur 2 a interrompu la partie") ;
+                        Fonctions.finDeJeu( joueur1, joueur2, "Le joueur 2 a interrompu la partie", gameDatas.fichierSauvegarde ) ;
                         System.exit(0) ;
                     }
                     else{
@@ -84,17 +99,23 @@ public class Main {
                         symbole = joueur2.symbole ;
                     }
                 }
-                grille = Fonctions.positionnerPion(grille, TAILLEGRILLE, colone, symbole) ;
-                grilleAafficher = Fonctions.affichGrille(grille, TAILLEGRILLE) ;
+
+                // sauvegarde du coup dans le fichier
+                gameDatas.fichierSauvegarde.write( symbole + " " + Integer.toString(colone) + "\n" ) ;
+
+                gameDatas.grille = Fonctions.positionnerPion(gameDatas.grille, TAILLEGRILLE, colone, symbole) ;
+                grilleAafficher = Fonctions.affichGrille(gameDatas.grille, TAILLEGRILLE) ;
                 Fonctions.envoyerMessage(joueur1, joueur2, grilleAafficher) ;
-                winner = Fonctions.testVictoire(grille, TAILLEGRILLE, colone, symbole, NBPIONSVICTOIRE) ;
-                grillePleine = Fonctions.testGrillePleine(grille, TAILLEGRILLE) ;
+                winner = Fonctions.testVictoire(gameDatas.grille, TAILLEGRILLE, colone, symbole, NBPIONSVICTOIRE) ;
+                grillePleine = Fonctions.testGrillePleine(gameDatas.grille, TAILLEGRILLE) ;
 
                 numJoueur += 1 ;
             }
 
-            msgFinal = Fonctions.Result(winner, numJoueur, nbTour ) ;
-            Fonctions.finDeJeu( joueur1, joueur2, msgFinal ) ;
+            msgFinal = Fonctions.Result(winner, numJoueur, gameDatas.nbTour ) ;
+            Fonctions.finDeJeu( joueur1, joueur2, msgFinal, gameDatas.fichierSauvegarde ) ;
+            socketServeur.close() ;
+
         }
         catch (Exception e) {
             e.printStackTrace();

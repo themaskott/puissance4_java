@@ -1,5 +1,21 @@
+// import de librairies java
+
 import java.net.* ;
 import java.io.* ;
+
+
+// Nom : Joueur2
+// Class gestion du Joueur 2 par un thread pour maintenir la socket reseau
+// comprend les fonctions necessaire pour interroger le joueur 2 et recuperer ses reponses
+// Ainsi qu une fonction choixColone utilisant la socket
+
+
+// Nom : choixColone
+// But : Demande au joueur la colone a remplir et vérifie si l'entree est correcte et disponible au jeu
+// Entree : la grille, sa taille, le numero du joueur
+// Sortie : retourne la colone choisie par le joueur
+// verifie qu au moins une case est disponible dans la grille et que le numero correspond au range de la taille
+// possibilite d arreter la partie avec 'FIN' --> -1
 
 public class Joueur2 extends Thread {
     char symbole ;

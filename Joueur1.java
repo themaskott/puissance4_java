@@ -1,6 +1,18 @@
 import java.lang.System ;
 import java.util.Scanner ;
 
+
+// Nom : Joueur1
+// Class gestion du Joueur 1
+// comprend les fonctions necessaire pour interroger le joueur 1 et recuperer ses reponses
+
+// Nom : choixColone
+// But : Demande au joueur la colone a remplir et vérifie si l'entree est correcte et disponible au jeu
+// Entree : la grille, sa taille, le numero du joueur
+// Sortie : retourne la colone choisie par le joueur
+// verifie qu au moins une case est disponible dans la grille et que le numero correspond au range de la taille
+// possibilite d arreter la partie avec 'FIN' --> -1
+
 public class Joueur1 {
     char symbole ;
 
@@ -28,11 +40,11 @@ public class Joueur1 {
         Scanner usrInput = new Scanner(System.in) ;
         String message ;
 
-        System.out.println("Entrez un entier ('FIN' pour arreter) :") ;
+        this.envoyerMessage("Entrez un entier ('FIN' pour arreter) :") ;
         message = usrInput.nextLine().toUpperCase() ;
 
         while ( !isNumeric(message) && !message.equals("FIN") ){
-            System.out.println("La colone doit etre un entier") ;
+            this.envoyerMessage("La colone doit etre un entier") ;
             message = usrInput.nextLine() ;
         }
         if ( message.equals("FIN") ){
@@ -46,7 +58,7 @@ public class Joueur1 {
     public Integer choixColone(char [][] grille, Integer size){
         boolean valid = false ;
         int colone ;
-        System.out.println("Joueur 1 quelle colone ?") ;
+        this.envoyerMessage("Joueur 1 quelle colone ?") ;
         colone = this.recevoirMessage() ;
 
         while ( !valid ){
@@ -61,12 +73,12 @@ public class Joueur1 {
                         valid = true ;
                     }
                     else{
-                        System.out.println("Colone pleine, choisissez une autre colone") ;
+                        this.envoyerMessage("Colone pleine, choisissez une autre colone") ;
                         colone = this.recevoirMessage() ;
                     }
                 }
                 else{
-                    System.out.printf("La colone doit etre comprise entre 1 et %d\n", size) ;
+                    this.envoyerMessage("La colone doit etre comprise entre 1 et " + Integer.toString(size)) ;
                     colone = this.recevoirMessage() ;
                 }
             }
