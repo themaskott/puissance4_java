@@ -6,12 +6,7 @@ import java.util.Scanner ;
 // Class gestion du Joueur 1
 // comprend les fonctions necessaire pour interroger le joueur 1 et recuperer ses reponses
 
-// Nom : choixColone
-// But : Demande au joueur la colone a remplir et vérifie si l'entree est correcte et disponible au jeu
-// Entree : la grille, sa taille, le numero du joueur
-// Sortie : retourne la colone choisie par le joueur
-// verifie qu au moins une case est disponible dans la grille et que le numero correspond au range de la taille
-// possibilite d arreter la partie avec 'FIN' --> -1
+
 
 public class Joueur1 {
     char symbole ;
@@ -20,10 +15,18 @@ public class Joueur1 {
         this.symbole = 'X' ;
     }
 
+    // Nom : envoyerMessage
+    // But : envoi d un message au joueur 1
+    // Entree : le message (string)
+    // Sortie : neant
     public void envoyerMessage(String message){
         System.out.println(message) ;
     }
 
+    // Nom : isNumeric
+    // But : test si une entree de type string peut être consideree comme un entier
+    // Entree : une chaine de caracteres
+    // Sortie : booleen
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -36,6 +39,10 @@ public class Joueur1 {
         return true;
     }
 
+    // Nom : recevoirMessage
+    // But : reception d un message du joueur 1, ici un entien (colone a jouer) ou 'fin'
+    // Entree : neant
+    // Sortie : le message ( string )
     public Integer recevoirMessage(){
         Scanner usrInput = new Scanner(System.in) ;
         String message ;
@@ -55,6 +62,12 @@ public class Joueur1 {
         }
     }
 
+    // Nom : choixColone
+    // But : Demande au joueur la colone a remplir et vérifie si l'entree est correcte et disponible au jeu
+    // Entree : la grille, sa taille, le numero du joueur
+    // Sortie : retourne la colone choisie par le joueur
+    // verifie qu au moins une case est disponible dans la grille et que le numero correspond au range de la taille
+    // possibilite d arreter la partie avec 'FIN' --> -1
     public Integer choixColone(char [][] grille, Integer size){
         boolean valid = false ;
         int colone ;

@@ -7,19 +7,12 @@
 
 
 import java.lang.System ;
-// import java.util.Arrays ;
-// import java.lang.Math;
 import java.net.* ;
-// import java.io.* ;
-
-// A faire : fonction menu initial
-// A faire : sauvegarde fichier i/o
-// commentaire des fonctions
 
 
 public class Main {
     //declaration de constantes
-    final static Integer TAILLEGRILLE = 5 ;
+    final static Integer TAILLEGRILLE = 6 ;
     final static Integer NBPIONSVICTOIRE = 4 ;
 
     final static int PORT = 4444 ;
@@ -28,14 +21,12 @@ public class Main {
 
         Joueur1 joueur1 ;
         Joueur2 joueur2 ;
-        char grille [][] ;
         String grilleAafficher ;
         String msgFinal ;
         SupportJeu gameDatas ;
 
         // initialisation de la partie 
         gameDatas = Fonctions.initialiserJeu(TAILLEGRILLE, "save.txt") ;
-
 
         // initialisation du joueur 1
         joueur1 = new Joueur1() ;
@@ -46,7 +37,7 @@ public class Main {
         try{
             // initialisation du socket en attente du joueur 2
             ServerSocket socketServeur = new ServerSocket(PORT);
-            System.out.println("En attente du joueur 2");
+            joueur1.envoyerMessage("En attente du joueur 2");
             Socket socketClient = socketServeur.accept();   
             joueur2 = new Joueur2(socketClient);
             joueur2.start();
@@ -67,7 +58,6 @@ public class Main {
             // booleens de controle
             boolean winner = false ;
             boolean grillePleine = false ;
-
 
             while ( !winner && !grillePleine ){
                 gameDatas.nbTour += 1 ;
@@ -103,16 +93,21 @@ public class Main {
                 // sauvegarde du coup dans le fichier
                 gameDatas.fichierSauvegarde.write( symbole + " " + Integer.toString(colone) + "\n" ) ;
 
-                gameDatas.grille = Fonctions.positionnerPion(gameDatas.grille, TAILLEGRILLE, colone, symbole) ;
-                grilleAafficher = Fonctions.affichGrille(gameDatas.grille, TAILLEGRILLE) ;
-                Fonctions.envoyerMessage(joueur1, joueur2, grilleAafficher) ;
-                winner = Fonctions.testVictoire(gameDatas.grille, TAILLEGRILLE, colone, symbole, NBPIONSVICTOIRE) ;
-                grillePleine = Fonctions.testGrillePleine(gameDatas.grille, TAILLEGRILLE) ;
+                // placement dans la grille du coup joue
+                gameDatas.grille = Fonctions.positionnerPion( gameDatas.grille, TAILLEGRILLE, colone, symbole ) ;
+                
+                // affichage de la nouvelle grille aux joueurs
+                grilleAafficher = Fonctions.affichGrille( gameDatas.grille, TAILLEGRILLE ) ;
+                Fonctions.envoyerMessage( joueur1, joueur2, grilleAafficher ) ;
+                
+                // tests : victoire du joueur , grille pleine
+                winner = Fonctions.testVictoire( gameDatas.grille, TAILLEGRILLE, colone, symbole, NBPIONSVICTOIRE ) ;
+                grillePleine = Fonctions.testGrillePleine( gameDatas.grille, TAILLEGRILLE ) ;
 
                 numJoueur += 1 ;
             }
 
-            msgFinal = Fonctions.Result(winner, numJoueur, gameDatas.nbTour ) ;
+            msgFinal = Fonctions.Result( winner, numJoueur, gameDatas.nbTour ) ;
             Fonctions.finDeJeu( joueur1, joueur2, msgFinal, gameDatas.fichierSauvegarde ) ;
             socketServeur.close() ;
 

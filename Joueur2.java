@@ -8,22 +8,13 @@ import java.io.* ;
 // Class gestion du Joueur 2 par un thread pour maintenir la socket reseau
 // comprend les fonctions necessaire pour interroger le joueur 2 et recuperer ses reponses
 // Ainsi qu une fonction choixColone utilisant la socket
-
-
-// Nom : choixColone
-// But : Demande au joueur la colone a remplir et vérifie si l'entree est correcte et disponible au jeu
-// Entree : la grille, sa taille, le numero du joueur
-// Sortie : retourne la colone choisie par le joueur
-// verifie qu au moins une case est disponible dans la grille et que le numero correspond au range de la taille
-// possibilite d arreter la partie avec 'FIN' --> -1
-
 public class Joueur2 extends Thread {
     char symbole ;
     Socket socket ;
     BufferedReader in ;
     PrintStream out ;
 
-    public Joueur2(Socket socket) throws Exception{
+    public Joueur2( Socket socket ) throws Exception{
         this.symbole = 'O' ;
         this.socket = socket ;
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -31,22 +22,35 @@ public class Joueur2 extends Thread {
         System.out.println("Connexion avec le client : " + socket.getInetAddress());
     }
 
-    public void envoyerMessage(String message) {
-        this.out.println(message);
+    // Nom : envoyerMessage
+    // But : envoi d un message au joueur 2 via la socket
+    // Entree : le message (string)
+    // Sortie : neant
+    public void envoyerMessage( String message ) {
+        this.out.println( message );
     }
 
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
+
+    // Nom : isNumeric
+    // But : test si une entree de type string peut être consideree comme un entier
+    // Entree : une chaine de caracteres
+    // Sortie : booleen
+    public static boolean isNumeric( String strNum ) {
+        if ( strNum == null ) {
             return false;
         }
         try {
-            int d = Integer.parseInt(strNum);
-        } catch (NumberFormatException nfe) {
+            int d = Integer.parseInt( strNum );
+        } catch ( NumberFormatException nfe ) {
             return false;
         }
         return true;
     }
 
+    // Nom : recevoirMessage
+    // But : reception d un message du joueur 2 via la socket, ici un entien (colone a jouer) ou 'fin'
+    // Entree : neant
+    // Sortie : le message ( string )
     public Integer recevoirMessage(){
         String message;
         message = "" ;
@@ -74,6 +78,12 @@ public class Joueur2 extends Thread {
         }
     }
 
+    // Nom : choixColone
+    // But : Demande au joueur la colone a remplir et vérifie si l'entree est correcte et disponible au jeu
+    // Entree : la grille, sa taille, le numero du joueur
+    // Sortie : retourne la colone choisie par le joueur
+    // verifie qu au moins une case est disponible dans la grille et que le numero correspond au range de la taille
+    // possibilite d arreter la partie avec 'FIN' --> -1
     public Integer choixColone(char [][] grille, Integer size){
         boolean valid = false ;
         int colone ;
@@ -105,6 +115,11 @@ public class Joueur2 extends Thread {
         return colone ;
     }
 
+
+    // Nom : shutDownSocket
+    // But : fermeture de la connexion reseau
+    // Entree : neant
+    // Sortie : neant
     public void shutDownSocket() throws Exception {
         try{
             this.socket.close() ;
